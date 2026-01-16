@@ -561,10 +561,12 @@ async function verifyViaAuthenticatedSMTP(
 }
 
 // Direct SMTP verification - tries both port 25 and 587
-function verifySMTP(email: string, mxHost: string): Promise<{ exists: boolean | null; reason?: string }> {
+function verifySMTP(email: string, mxHost: string): Promise<{ exists: boolean | null; reason?: string; method?: string }> {
   return new Promise((resolve) => {
     // Try port 25 first (standard SMTP)
-    tryPort(email, mxHost, 25, resolve);
+    tryPort(email, mxHost, 25, (result) => {
+      resolve({ ...result, method: 'smtp' });
+    });
   });
 }
 
@@ -819,7 +821,7 @@ export default async function handler(
       mxRecords: mxRecords.length,
       mailServer: primaryMX,
       reason: finalReason,
-      method: smtpResult.method || 'comprehensive',
+      method: (smtpResult as any)?.method || 'comprehensive',
       details: {
         format: comprehensiveCheck.format,
         type: comprehensiveCheck.type,
