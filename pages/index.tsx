@@ -230,8 +230,8 @@ export default function EmailVerifier() {
       // Parse recipients (split by comma, space, or newline)
       const recipients = recipientsToUse
         .split(/[\n,\s]+/)
-        .map(r => r.trim())
-        .filter(r => r.length > 0 && r.includes('@'));
+        .map((r: string) => r.trim())
+        .filter((r: string) => r.length > 0 && r.includes('@'));
 
       if (recipients.length === 0) {
         alert('Please enter at least one valid email address');
